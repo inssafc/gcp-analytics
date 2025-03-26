@@ -1,10 +1,8 @@
 name: Deploy Infrastructure with Terraform
-
 on:
   push:
     branches:
       - 'main'
-
 jobs:
   deploy:
     name: Terraform Deploy
@@ -15,12 +13,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          export_environment_variables: true
+          
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.0  
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           
       - name: Terraform Init
         id: init
@@ -29,5 +32,12 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
+        
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        
+      - name: Get Function URL
+        run: echo "FUNCTION_URL=$(terraform output -raw function_url)" >> $GITHUB_ENV
+      
+      - name: Trigger Cloud Function
+        run: curl -X POST "${{ env.FUNCTION_URL }}"
