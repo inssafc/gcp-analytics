@@ -28,7 +28,7 @@ def fetch_store_data(request):
         temp_file_name = temp_file.name
     
 
-    bucket_name = "products-data"
+    bucket_name = "fakestore-products-data"
     destination_blob_name = "products.csv"
     
     storage_client = storage.Client()
