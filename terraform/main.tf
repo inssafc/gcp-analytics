@@ -13,7 +13,7 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "product_data_bucket" {
-  name                        = "products_data"
+  name                        = "${var.project_id}-products-data"
   location                    = "US"
   uniform_bucket_level_access = true
 }
