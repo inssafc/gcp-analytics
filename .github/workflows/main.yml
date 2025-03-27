@@ -36,19 +36,24 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: Extract Function URL and Trigger Function
+      - name: Extract and Trigger Function
         run: |
-          # Extract the URL 
-          FUNCTION_URL=$(terraform output -raw function_url | head -n 1)
-          echo "Function URL: $FUNCTION_URL"
+          # Get Terraform output and print it for debugging
+          echo "Terraform outputs:"
+          terraform output
           
-          # Make sure the URL is valid
-          if [[ $FUNCTION_URL == https://* ]]; then
-            echo "Triggering function at $FUNCTION_URL"
-            curl -X POST "$FUNCTION_URL"
+          # Save just the value line from the function_url output
+          FUNCTION_URL=$(terraform output function_url | grep -v "=" | xargs)
+          echo "Extracted Function URL: $FUNCTION_URL"
+          
+          # Check if it looks like a valid URL
+          if [[ $FUNCTION_URL == *"run.app"* ]]; then
+            echo "Triggering function at: $FUNCTION_URL"
+            curl -v -X POST "$FUNCTION_URL"
           else
-            echo "Invalid URL: $FUNCTION_URL"
-            echo "Full terraform output:"
-            terraform output
+            echo "Could not extract valid URL from Terraform output"
             exit 1
           fi
+
+      
+    
