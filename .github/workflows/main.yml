@@ -35,9 +35,10 @@ jobs:
         
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      - name: Extract Function URL and Trigger Function
+        run: |
+          FUNCTION_URL=$(terraform output -raw function_url)
+          echo "Function URL: $FUNCTION_URL"
         
-      - name: Get Function URL
-        run: echo "FUNCTION_URL=$(terraform output -raw function_url)" >> $GITHUB_ENV
-      
-      - name: Trigger Cloud Function
-        run: curl -X POST "${{ env.FUNCTION_URL }}"
+          curl -X POST "$FUNCTION_URL"
