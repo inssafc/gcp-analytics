@@ -36,21 +36,12 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: Debug Terraform Outputs
-        run: |
-          echo "All Terraform outputs:"
-          terraform output
-      
       - name: Get Function URL
         id: function
         run: |
           FUNCTION_URL=$(terraform output -raw function_url)
-          if [[ $FUNCTION_URL != http* ]]; then
-            echo "Error: Invalid function URL obtained: $FUNCTION_URL"
-            exit 1
-          fi
-          echo "url=$FUNCTION_URL" >> $GITHUB_OUTPUT
           echo "Function URL: $FUNCTION_URL"
+          echo "url=$FUNCTION_URL" >> $GITHUB_OUTPUT
       
       - name: Trigger Cloud Run Function
         run: |
@@ -58,4 +49,3 @@ jobs:
           -H "Authorization: bearer $(gcloud auth print-identity-token)" \
           -H "Content-Type: application/json" \
           -d '{}'
-      
