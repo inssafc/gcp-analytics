@@ -70,13 +70,6 @@ resource "google_cloud_run_service_iam_member" "public_invoker" {
   member   = "allUsers"
 }
 
-resource "time_sleep" "wait_for_function" {
-  depends_on = [google_cloudfunctions2_function.data_ingestion_function]
-  create_duration = "30s"
-}
-
-output "function_uri" {
-  depends_on = [time_sleep.wait_for_function]
-  value      = google_cloudfunctions2_function.data_ingestion_function.service_config[0].uri
-  description = "The Cloud Run URL for the function"
+output "function_url" {
+  value = "https://${var.region}-${var.project_id}.cloudfunctions.net/${google_cloudfunctions2_function.data_ingestion_function.name}"
 }
