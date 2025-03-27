@@ -37,10 +37,14 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Get Function URL
-        id: function
         run: |
-          FUNCTION_URL=$(terraform output -raw function_url)
+          REGION=${{ secrets.GCP_REGION }}
+          PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
+          FUNCTION_NAME=${{ secrets.FUNCTION_NAME }}
+          
+          FUNCTION_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${FUNCTION_NAME}"
           echo "Function URL: $FUNCTION_URL"
+          
           echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
       
       - name: Trigger Cloud Run Function
