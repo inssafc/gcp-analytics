@@ -35,18 +35,4 @@ jobs:
         
       - name: Terraform Apply
         run: terraform apply -auto-approve
-      - name: Extract and Trigger Function (Simple Approach)
-        run: |
-          
-          terraform output -raw function_url > url.txt
-          
-          CLEAN_URL=$(head -n 1 url.txt | tr -d '\r\n')
-          
-          echo "URL from file: $CLEAN_URL"
-          
-          echo "Waiting 10 seconds for function to be fully available..."
-          sleep 10
-          
-          echo "Triggering function at: $CLEAN_URL"
-          curl -X POST "${CLEAN_URL}"
-          
+      
