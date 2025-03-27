@@ -39,23 +39,13 @@ jobs:
       - name: Get Function URL
         id: function
         run: |
-          # Extract entire terraform output
-          TERRAFORM_OUTPUT=$(terraform output)
-          # Use grep to extract the URL
-          FUNCTION_URL=$(echo "$TERRAFORM_OUTPUT" | grep -o "https://data-ingestion[^\"]*")
-          
-          if [ -z "$FUNCTION_URL" ]; then
-            echo "ERROR: Could not extract function URL"
-            echo "$TERRAFORM_OUTPUT"
-            exit 1
-          fi
-          
+          FUNCTION_URL=$(terraform output -raw function_url)
           echo "Function URL: $FUNCTION_URL"
-          echo "url=$FUNCTION_URL" >> $GITHUB_OUTPUT
-
+          echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
+      
       - name: Trigger Cloud Run Function
         run: |
-          curl -X POST "${{ steps.function.outputs.url }}" \
+          curl -X POST "$FUNCTION_URL" \
           -H "Authorization: bearer $(gcloud auth print-identity-token)" \
           -H "Content-Type: application/json" \
           -d '{}'
