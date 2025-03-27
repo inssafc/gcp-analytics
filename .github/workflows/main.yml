@@ -39,10 +39,12 @@ jobs:
       - name: Get Function URL
         id: function
         run: |
-          FUNCTION_URL=$(terraform output -raw function_url | grep -o "https://[^ ]*")
+          # Use a temporary file to store the output
+          terraform output -raw function_url > url.txt
+          FUNCTION_URL=$(cat url.txt | tr -d '\n')
           echo "Function URL: $FUNCTION_URL"
           echo "url=$FUNCTION_URL" >> $GITHUB_OUTPUT
-      
+
       - name: Trigger Cloud Run Function
         run: |
           curl -X POST "${{ steps.function.outputs.url }}" \
