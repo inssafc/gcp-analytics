@@ -39,7 +39,7 @@ jobs:
       - name: Get Function URL
         id: function
         run: |
-          FUNCTION_URL=$(terraform output -raw function_url)
+          FUNCTION_URL=$(terraform output -raw function_url | grep -o "https://[^ ]*")
           echo "Function URL: $FUNCTION_URL"
           echo "url=$FUNCTION_URL" >> $GITHUB_OUTPUT
       
