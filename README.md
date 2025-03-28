@@ -1,8 +1,7 @@
 # gcp-analytics
 
 
-
- **Additional files** :
+**Additional files** :
 
 The **Documentation_files** folder contains two PDF files:
 
@@ -10,3 +9,5 @@ The **Documentation_files** folder contains two PDF files:
 * The second one summarizes the results of the business questions addressed in Task 2.
 
 The **Google-Analytics-task-2-and-3** folder includes the SQL queries I used in Tasks 2 and 3.
+
+![1743181867084](image/README/1743181867084.png)
